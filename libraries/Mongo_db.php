@@ -10,7 +10,15 @@ class Mongo_db extends Mongo
     {
         $this->ci = get_instance();
         $this->ci->config->load('mongo');
-        parent::__construct(config_item('mongo_host') . ':' . config_item('mongo_port'));
+        try
+        {
+            parent::__construct(config_item('mongo_host') . ':' . config_item('mongo_port'));
+        }
+        catch (MongoConnectionException $e)
+        {
+            show_error("MongoDB connection failed: {$e->getMessage()}", 500);
+        }
+
         if (!config_item('mongo_database'))
         {
             show_error('mongo_database can not empty.', 500);
