@@ -27,7 +27,14 @@ class Mongo_db extends Mongo
 
     public function __get($name)
     {
-        return $this->selectCollection(config_item('mongo_database'), $name);
+        if ($name == 'gridfs')
+        {
+            return $this->selectDB(config_item('mongo_database'))->getGridFS();
+        }
+        else
+        {
+            return $this->selectCollection(config_item('mongo_database'), $name);
+        }
     }
 
     public function batchInsert($a, $options = array())
